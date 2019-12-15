@@ -1,5 +1,6 @@
-from mysql.connector import Error
 from dml.connection_pool import ConnectionPool
+from mysql.connector import Error
+
 
 class ProductDao():
     def __init__(self):
