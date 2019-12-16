@@ -2,7 +2,7 @@ import os
 
 from mysql.connector import errorcode, Error
 
-from db_connection.connection_pool import ExplicitlyConnectionPool
+from db_connection.connection_pool import ConnectionPool
 from db_connection.read_ddl import read_ddl_file
 
 
@@ -13,7 +13,7 @@ class DbInit:
     def __create_database(self):
         try:
             sql = read_ddl_file()
-            conn = ExplicitlyConnectionPool.get_instance().get_connection()
+            conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
             cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(self._db['database_name']))
             print("CREATE DATABASE {}".format(self._db['database_name']))
@@ -31,7 +31,7 @@ class DbInit:
 
     def __create_table(self):
         try:
-            conn = ExplicitlyConnectionPool.get_instance().get_connection()
+            conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
             # cursor.execute("USE {}".format(self._db['database_name']))
             for table_name, table_sql in self._db['sql'].items():
@@ -53,7 +53,7 @@ class DbInit:
 
     def __create_user(self):
         try:
-            conn = ExplicitlyConnectionPool.get_instance().get_connection()
+            conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
             print("Creating user: ", end='')
             cursor.execute(self._db['user_sql'])
@@ -66,7 +66,7 @@ class DbInit:
 
     def __create_trigger(self):
         try:
-            conn = ExplicitlyConnectionPool.get_instance().get_connection()
+            conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
             # cursor.execute("USE {}".format(self._db['database_name']))
             for trigger_name, trigger_sql in self._db['trigger'].items():
@@ -88,7 +88,7 @@ class DbInit:
 
     def __create_procedure(self):
         try:
-            conn = ExplicitlyConnectionPool.get_instance().get_connection()
+            conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
             # cursor.execute("USE {}".format(self._db['database_name']))
             for procedure_name, procedure_sql in self._db['procedure'].items():
@@ -107,7 +107,7 @@ class DbInit:
 
     def backup(self):
         try:
-            conn = ExplicitlyConnectionPool.get_instance().get_connection()
+            conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
             # cursor.execute("USE {}".format(self._db['database_name']))
             for backup_name, backup_sql in self._db['backup'].items():
@@ -129,7 +129,7 @@ class DbInit:
 
     def restore(self):
         try:
-            conn = ExplicitlyConnectionPool.get_instance().get_connection()
+            conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
             # cursor.execute("USE {}".format(self._db['database_name']))
             for restore_name, restore_sql in self._db['restore'].items():

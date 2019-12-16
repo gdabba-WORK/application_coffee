@@ -12,7 +12,6 @@ class CoffeeUiDDL(QWidget):
         self.ui.show()
         self.db = DbInit()
 
-
         # 변수 stat에는 true가 assignment 된다.
         # ==QAbstractButton.py==
         # def clicked(self, bool=False):  # real signature unknown; restored from __doc__

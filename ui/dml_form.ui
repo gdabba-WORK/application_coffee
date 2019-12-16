@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QStackedWidget" name="stk_Widget">
+    <widget class="QStackedWidget" name="stk_widget">
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -24,7 +24,7 @@
        <item row="0" column="0">
         <layout class="QFormLayout" name="formLayout">
          <item row="0" column="0">
-          <widget class="QLabel" name="lbl_code">
+          <widget class="QLabel" name="pro_lbl_code">
            <property name="font">
             <font>
              <weight>75</weight>
@@ -37,10 +37,10 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="le_code"/>
+          <widget class="QLineEdit" name="pro_le_code"/>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="lbl_name">
+          <widget class="QLabel" name="pro_lbl_name">
            <property name="font">
             <font>
              <weight>75</weight>
@@ -53,38 +53,197 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="le_name"/>
+          <widget class="QLineEdit" name="pro_le_name"/>
          </item>
         </layout>
        </item>
        <item row="1" column="0">
-        <widget class="QSplitter" name="splitter">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <widget class="QPushButton" name="btn_add">
-          <property name="text">
-           <string>추가</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="btn_del">
-          <property name="text">
-           <string>삭제</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="btn_init">
-          <property name="text">
-           <string>초기화</string>
-          </property>
-         </widget>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <spacer name="pro_horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>100</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pro_btn_add">
+           <property name="text">
+            <string>추가</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pro_btn_del">
+           <property name="text">
+            <string>삭제</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pro_btn_init">
+           <property name="text">
+            <string>초기화</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item row="2" column="0">
-        <widget class="QTableView" name="tbl_widget"/>
+        <widget class="QTableWidget" name="pro_tbl_widget">
+         <property name="columnCount">
+          <number>2</number>
+         </property>
+         <column/>
+         <column/>
+        </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_sale"/>
+     <widget class="QWidget" name="page_sale">
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <layout class="QFormLayout" name="formLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="sale_lbl_no">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>no</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="sale_le_no"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="sale_lbl_code">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>code</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="sale_le_code"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="sale_lbl_price">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>price</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="sale_lbl_salecnt">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>saleCnt</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="sale_lbl_marginrate">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>marginRate</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="sale_le_price"/>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="sale_le_salecnt"/>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="sale_le_marginrate"/>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="sale_btn_add">
+           <property name="text">
+            <string>추가</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="sale_btn_del">
+           <property name="text">
+            <string>삭제</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="sale_btn_init">
+           <property name="text">
+            <string>초기화</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <widget class="QTableWidget" name="sale_tbl_widget">
+         <property name="columnCount">
+          <number>5</number>
+         </property>
+         <column/>
+         <column/>
+         <column/>
+         <column/>
+         <column/>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>

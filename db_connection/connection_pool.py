@@ -1,19 +1,19 @@
 from mysql.connector.pooling import MySQLConnectionPool
 
 
-class ExplicitlyConnectionPool(object):
+class ConnectionPool(object):
     INSTANCE = None
 
     def __init__(self):
         if self.INSTANCE is not None:
             raise ValueError("An instantiation already exists!")
         else:
-            self.__cnxPool = MySQLConnectionPool(pool_name="myPool", pool_size=5, option_files="db_config.conf")
+            self.__cnxPool = MySQLConnectionPool(pool_name="myPool", pool_size=5, option_files="./db_connection/db_config.conf")
 
     @classmethod
     def get_instance(cls, *args, **kargs):
         if cls.INSTANCE is None:
-            cls.INSTANCE = ExplicitlyConnectionPool()
+            cls.INSTANCE = ConnectionPool()
             # cls.INSTANCE = cls(*args, **kargs)
         return cls.INSTANCE
 
