@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication, QWidget
 
 from dao.sale_dao import SaleDao
-from ui.dml_form2 import DMLUI
+from ui.dml_form import DMLUI
 
 
 class NameErrorr(BaseException):

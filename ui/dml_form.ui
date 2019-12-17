@@ -15,11 +15,14 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QStackedWidget" name="stk_widget">
+    <widget class="QTabWidget" name="tab_widget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="page_product">
+     <widget class="QWidget" name="pro_tab_widget">
+      <attribute name="title">
+       <string>Product</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
         <layout class="QFormLayout" name="formLayout">
@@ -106,7 +109,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_sale">
+     <widget class="QWidget" name="sale_tab_widget">
+      <attribute name="title">
+       <string>Sale</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
         <layout class="QFormLayout" name="formLayout_2">
@@ -156,7 +162,7 @@
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="sale_lbl_salecnt">
+          <widget class="QLabel" name="sale_lbl_saleCnt">
            <property name="font">
             <font>
              <weight>75</weight>
@@ -169,7 +175,7 @@
           </widget>
          </item>
          <item row="4" column="0">
-          <widget class="QLabel" name="sale_lbl_marginrate">
+          <widget class="QLabel" name="sale_lbl_marginRate">
            <property name="font">
             <font>
              <weight>75</weight>
@@ -185,10 +191,10 @@
           <widget class="QLineEdit" name="sale_le_price"/>
          </item>
          <item row="3" column="1">
-          <widget class="QLineEdit" name="sale_le_salecnt"/>
+          <widget class="QLineEdit" name="sale_le_saleCnt"/>
          </item>
          <item row="4" column="1">
-          <widget class="QLineEdit" name="sale_le_marginrate"/>
+          <widget class="QLineEdit" name="sale_le_marginRate"/>
          </item>
         </layout>
        </item>
