@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import QApplication, QWidget
 
 from dao.sale_dao import SaleDao
-from ui.dml_form import DMLUI
+from ui.coffee_main import MainUi
+from ui.dml_form import DMLUi
 
 
 class NameErrorr(BaseException):
@@ -46,5 +47,5 @@ if __name__ == "__main__":
     # widget.show()
 
     app = QApplication([])
-    w = DMLUI()
+    w = MainUi()
     app.exec_()

@@ -17,7 +17,7 @@ def create_table(table=None, data=None):
     return table
 
 
-class DMLUI(QWidget):
+class DMLUi(QWidget):
     def __init__(self):
         super().__init__()
         self.ui = uic.loadUi("./ui/dml_form.ui")
@@ -25,6 +25,7 @@ class DMLUI(QWidget):
         self.ui.show()
         self.pro_tbl_widget = create_table(self.ui.pro_tbl_widget, ["code", "name"])
         self.sale_tbl_widget = create_table(self.ui.sale_tbl_widget, ["no", "code", "price", "saleCnt", "marginRate"])
+        self.saleDetail_tbl_widget = create_table(self.ui.saleDetail_tbl_widget, ["no", "salePrice", "addTax", "supplyPrice", "marginPrice"])
 
         # signal & slot
         self.ui.pro_btn_add.clicked.connect(self.add_item)
@@ -33,10 +34,14 @@ class DMLUI(QWidget):
         self.ui.sale_btn_add.clicked.connect(self.add_item)
         self.ui.sale_btn_del.clicked.connect(self.delete_item)
         self.ui.sale_btn_init.clicked.connect(self.init_item)
+        self.ui.saleDetail_btn_add.clicked.connect(self.add_item)
+        self.ui.saleDetail_btn_del.clicked.connect(self.delete_item)
+        self.ui.saleDetail_btn_init.clicked.connect(self.init_item)
 
         # 마우스 우클릭시 메뉴
         self.set_context_menu(self.pro_tbl_widget)
         self.set_context_menu(self.sale_tbl_widget)
+        self.set_context_menu(self.saleDetail_tbl_widget)
 
         data_pro = [(1, "마케팅"), (2, "개발"), (3, "인사")]
         data_sale = [(1, 1, 1000, 20, 50), (2, 2, 500, 10, 30), (3, 3, 2000, 50, 10)]
@@ -94,7 +99,7 @@ class DMLUI(QWidget):
         # QMessageBox.information(self, 'Update', "확인", QMessageBox.Ok)
         if self.ui.tab_widget.currentIndex() == 0:
             try:
-                if self.pro_tbl_widget.selectedIndexes().__len__() > 1:
+                if self.pro_tbl_widget.selectedIndexes().__len__() > self.pro_tbl_widget.columnCount():
                     raise IndexError('수정은 하나의 행만 가능합니다!')
                 selectedItems = self.pro_tbl_widget.selectedItems()
                 self.ui.pro_le_code.setText(selectedItems[0].text())
@@ -108,7 +113,7 @@ class DMLUI(QWidget):
 
         elif self.ui.tab_widget.currentIndex() == 1:
             try:
-                if self.pro_tbl_widget.selectedIndexes().__len__() > 1:
+                if self.sale_tbl_widget.selectedIndexes().__len__() > self.sale_tbl_widget.columnCount():
                     raise IndexError('수정은 하나의 행만 가능합니다!')
                 selectedItems = self.sale_tbl_widget.selectedItems()
                 self.ui.sale_le_no.setText(selectedItems[0].text())
@@ -177,26 +182,26 @@ class DMLUI(QWidget):
         if self.ui.tab_widget.currentIndex() == 0:
             selectedIndexes = self.pro_tbl_widget.selectedIndexes()
             item0, item1 = self.get_item_from_le()
-            self.pro_tbl_widget.setItem(selectedIndexes[0].row(), 0, item0)
-            self.pro_tbl_widget.setItem(selectedIndexes[1].row(), 1, item1)
+            self.pro_tbl_widget.setItem(selectedIndexes[0].row(), selectedIndexes[0].column(), item0)
+            self.pro_tbl_widget.setItem(selectedIndexes[1].row(), selectedIndexes[1].column(), item1)
             self.ui.pro_btn_add.setText("추가")
             self.ui.pro_btn_add.clicked.disconnect()
             self.ui.pro_btn_add.clicked.connect(self.add_item)
             # self.pro_tbl_widget.setSelectionMode(QAbstractItemView.SingleSelection)
-            self.pro_tbl_widget.setSelectionMode(QAbstractItemView.SelectRows)
+            self.pro_tbl_widget.setSelectionMode(QAbstractItemView.MultiSelection)
         elif self.ui.tab_widget.currentIndex() == 1:
             selectedIndexes = self.sale_tbl_widget.selectedIndexes()
             item0, item1, item2, item3, item4 = self.get_item_from_le()
-            self.sale_tbl_widget.setItem(selectedIndexes[0].row(), 0, item0)
-            self.sale_tbl_widget.setItem(selectedIndexes[1].row(), 1, item1)
-            self.sale_tbl_widget.setItem(selectedIndexes[2].row(), 2, item1)
-            self.sale_tbl_widget.setItem(selectedIndexes[3].row(), 3, item1)
-            self.sale_tbl_widget.setItem(selectedIndexes[4].row(), 4, item1)
+            self.sale_tbl_widget.setItem(selectedIndexes[0].row(), selectedIndexes[0].column(), item0)
+            self.sale_tbl_widget.setItem(selectedIndexes[1].row(), selectedIndexes[1].column(), item1)
+            self.sale_tbl_widget.setItem(selectedIndexes[2].row(), selectedIndexes[2].column(), item2)
+            self.sale_tbl_widget.setItem(selectedIndexes[3].row(), selectedIndexes[3].column(), item3)
+            self.sale_tbl_widget.setItem(selectedIndexes[4].row(), selectedIndexes[4].column(), item4)
             self.ui.sale_btn_add.setText("추가")
             self.ui.sale_btn_add.clicked.disconnect()
             self.ui.sale_btn_add.clicked.connect(self.add_item)
             # self.sale_tbl_widget.setSelectionMode(QAbstractItemView.SingleSelection)
-            self.sale_tbl_widget.setSelectionMode(QAbstractItemView.SelectRows)
+            self.sale_tbl_widget.setSelectionMode(QAbstractItemView.MultiSelection)
         self.init_item()
 
     # 클릭으로 선택된 row '삭제'버튼으로 삭제
