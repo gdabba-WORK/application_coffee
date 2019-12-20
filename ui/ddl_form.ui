@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>511</width>
-    <height>160</height>
+    <width>532</width>
+    <height>295</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,6 +40,19 @@
      <string>Restore</string>
     </property>
    </widget>
+  </widget>
+  <widget class="QPushButton" name="btn_close">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>190</y>
+     <width>80</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>close</string>
+   </property>
   </widget>
  </widget>
  <resources/>

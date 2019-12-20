@@ -25,7 +25,7 @@
     </property>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="btn_ddl">
        <property name="minimumSize">
         <size>
          <width>500</width>
@@ -38,7 +38,7 @@
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="btn_dml">
        <property name="minimumSize">
         <size>
          <width>500</width>
@@ -51,7 +51,7 @@
       </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="btn_dcl">
        <property name="minimumSize">
         <size>
          <width>500</width>
@@ -64,7 +64,7 @@
       </widget>
      </item>
      <item row="3" column="0">
-      <widget class="QPushButton" name="pushButton_4">
+      <widget class="QPushButton" name="btn_exit">
        <property name="minimumSize">
         <size>
          <width>500</width>

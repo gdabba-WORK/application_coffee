@@ -8,7 +8,7 @@ class ConnectionPool(object):
         if self.INSTANCE is not None:
             raise ValueError("An instantiation already exists!")
         else:
-            self.__cnxPool = MySQLConnectionPool(pool_name="myPool", pool_size=5, option_files="./db_connection/db_config.conf")
+            self.__cnxPool = MySQLConnectionPool(pool_name="myPool", pool_size=5, option_files="db_connection/db_config.conf")
 
     @classmethod
     def get_instance(cls, *args, **kargs):
