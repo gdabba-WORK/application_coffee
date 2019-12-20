@@ -23,10 +23,7 @@ class Dao(metaclass=ABCMeta):
         try:
             conn = self.connection_pool.get_connection()
             cursor = conn.cursor()
-            if kwargs['kargs'] is not None:
-                cursor.execute(kwargs['query'], kwargs['kargs'])
-            else:
-                cursor.execute(kwargs['query'])
+            cursor.execute(kwargs['query'], kwargs['kargs'])
             conn.commit()
         except Error as e:
             print(e)

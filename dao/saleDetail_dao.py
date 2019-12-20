@@ -4,26 +4,26 @@ from mysql.connector import Error
 
 from dao.abs_dao import Dao
 
-insert_sql = "Insert into sale values(%s, %s, %s, %s, %s)"
-update_sql = "UPDATE sale SET code=%s, price=%s, saleCnt=%s, marginRate=%s WHERE no=%s"
-delete_sql = "DELETE FROM sale WHERE no=%s"
-select_sql = "SELECT no, code, price, saleCnt, marginRate FROM sale"
+insert_sql = "Insert into sale_detail values(%s, %s, %s, %s, %s)"
+update_sql = "UPDATE sale_detail SET salePrice=%s, addTax=%s, supplyPrice=%s, marginPrice=%s WHERE no=%s"
+delete_sql = "DELETE FROM sale_detail WHERE no=%s"
+select_sql = "SELECT no, salePrice, addTax, supplyPrice, marginPrice FROM sale_detail"
 select_sql_where = select_sql + " WHERE no=%s"
 
 
-class SaleDao(Dao):
-    def insert_item(self, no=None, code=None, price=None, saleCnt=None, marginRate=None):
+class SaleDetailDao(Dao):
+    def insert_item(self, no=None, salePrice=None, addTax=None, supplyPrice=None, marginPrice=None):
         print("\n______{}()______".format(inspect.stack()[0][3]))
-        args = (no, code, price, saleCnt, marginRate)
+        args = (no, salePrice, addTax, supplyPrice, marginPrice)
         try:
             super().do_query(query=insert_sql, kargs=args)
             return True
         except Error:
             return False
 
-    def update_item(self, code=None, price=None, saleCnt=None, marginRate=None, no=None):
+    def update_item(self, salePrice=None, addTax=None, supplyPrice=None, marginPrice=None, no=None):
         print("\n______{}()______".format(inspect.stack()[0][3]))
-        args = (code, price, saleCnt, marginRate, no)
+        args = (salePrice, addTax, supplyPrice, marginPrice, no)
         try:
             self.do_query(query=update_sql, kargs=args)
             return True
