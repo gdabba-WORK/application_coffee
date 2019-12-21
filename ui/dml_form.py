@@ -11,6 +11,10 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QAbstractItemView, QHeaderView, QAction, QTableWidgetItem, QMessageBox
 from skimage.viewer.qt import Qt
 
+from dao.product_dao import ProductDao
+from dao.saleDetail_dao import SaleDetailDao
+from dao.sale_dao import SaleDao
+
 
 def set_table(table=None, data=None):
     table.setHorizontalHeaderLabels(data)
@@ -24,6 +28,9 @@ def set_table(table=None, data=None):
 
 class DMLUi(QWidget):
     closeSignal = pyqtSignal()
+    pDao = ProductDao()
+    sDao = SaleDao()
+    sdDao = SaleDetailDao()
 
     def __init__(self):
         super().__init__()
@@ -51,14 +58,7 @@ class DMLUi(QWidget):
         self.set_context_menu(self.pro_tbl_widget)
         self.set_context_menu(self.sale_tbl_widget)
         self.set_context_menu(self.saleDetail_tbl_widget)
-
-        # 임시 데이터 생성
-        data_pro = [(1, "마케팅"), (2, "개발"), (3, "인사")]
-        data_sale = [(1, 1, 1000, 20, 50), (2, 2, 500, 10, 30), (3, 3, 2000, 50, 10)]
-        data_saleDetail = [(1, 1, 1000, 20, 50), (2, 2, 500, 10, 30), (3, 3, 2000, 50, 10)]
-        self.load_data(data_pro, 0)
-        self.load_data(data_sale, 1)
-        self.load_data(data_saleDetail, 2)
+        self.load_data_from_db()
 
     # 우클릭 메뉴 생성과 해당 기능별 slot과 connect()한다.
     def set_context_menu(self, tv):
@@ -70,6 +70,55 @@ class DMLUi(QWidget):
         tv.addAction(delete_action)
         update_action.triggered.connect(self.__update)
         delete_action.triggered.connect(self.__delete)
+
+    # tbl_widget에 들어갈 QTableWidgetItem 객체들을 생성해서 반환한다.
+    def create_item(self, *args):
+        items = []
+        for value in args:
+            item = QTableWidgetItem()
+            item.setTextAlignment(Qt.AlignCenter)
+            item.setData(Qt.DisplayRole, value)
+            items.append(item)
+        return items
+
+    # enumerate(): 인덱스 번호와 컬렉션의 원소를 tuple형태로 반환한다.
+    def load_data(self, data, flag):
+        if flag == 0:
+            [self.pro_tbl_widget.removeRow(0) for _ in range(self.pro_tbl_widget.rowCount())]
+            for idx, (code, name) in enumerate(data):
+                item_code, item_name = self.create_item(code, name)
+                nextIdx = self.pro_tbl_widget.rowCount()
+                self.pro_tbl_widget.insertRow(nextIdx)
+                self.pro_tbl_widget.setItem(nextIdx, 0, item_code)
+                self.pro_tbl_widget.setItem(nextIdx, 1, item_name)
+        elif flag == 1:
+            [self.sale_tbl_widget.removeRow(0) for _ in range(self.sale_tbl_widget.rowCount())]
+            for idx, (no, code, price, saleCnt, marginRate) in enumerate(data):
+                item0, item1, item2, item3, item4 = self.create_item(no, code, price, saleCnt, marginRate)
+                nextIdx = self.sale_tbl_widget.rowCount()
+                self.sale_tbl_widget.insertRow(nextIdx)
+                self.sale_tbl_widget.setItem(nextIdx, 0, item0)
+                self.sale_tbl_widget.setItem(nextIdx, 1, item1)
+                self.sale_tbl_widget.setItem(nextIdx, 2, item2)
+                self.sale_tbl_widget.setItem(nextIdx, 3, item3)
+                self.sale_tbl_widget.setItem(nextIdx, 4, item4)
+        elif flag == 2:
+            [self.saleDetail_tbl_widget.removeRow(0) for _ in range(self.saleDetail_tbl_widget.rowCount())]
+            for idx, (no, salePrice, addTax, supplyPrice, marginPrice) in enumerate(data):
+                item0, item1, item2, item3, item4 = self.create_item(no, salePrice, addTax, supplyPrice, marginPrice)
+                nextIdx = self.saleDetail_tbl_widget.rowCount()
+                self.saleDetail_tbl_widget.insertRow(nextIdx)
+                self.saleDetail_tbl_widget.setItem(nextIdx, 0, item0)
+                self.saleDetail_tbl_widget.setItem(nextIdx, 1, item1)
+                self.saleDetail_tbl_widget.setItem(nextIdx, 2, item2)
+                self.saleDetail_tbl_widget.setItem(nextIdx, 3, item3)
+                self.saleDetail_tbl_widget.setItem(nextIdx, 4, item4)
+
+    # DB에서 테이블별 데이터 읽어오기
+    def load_data_from_db(self):
+        self.load_data(self.pDao.select_item(), 0)
+        self.load_data(self.sDao.select_item(), 1)
+        self.load_data(self.sdDao.select_item(), 2)
 
     # 우클릭 '수정'선택시 수행되는 기능
     def __update(self):
@@ -128,67 +177,26 @@ class DMLUi(QWidget):
         pass
         QMessageBox.information(self, 'Delete', "확인", QMessageBox.Ok)
 
-    # hard coding된 data(원소가 튜플인 리스트)를 tbl_widget에 삽입한다.
-    # enumerate(): 인덱스 번호와 컬렉션의 원소를 tuple형태로 반환한다.
-    def load_data(self, data, flag):
-        if flag == 0:
-            for idx, (code, name) in enumerate(data):
-                item_code, item_name = self.create_item(code, name)
-                nextIdx = self.pro_tbl_widget.rowCount()
-                self.pro_tbl_widget.insertRow(nextIdx)
-                self.pro_tbl_widget.setItem(nextIdx, 0, item_code)
-                self.pro_tbl_widget.setItem(nextIdx, 1, item_name)
-        elif flag == 1:
-            for idx, (no, code, price, saleCnt, marginRate) in enumerate(data):
-                item0, item1, item2, item3, item4 = self.create_item(no, code, price, saleCnt, marginRate)
-                nextIdx = self.sale_tbl_widget.rowCount()
-                self.sale_tbl_widget.insertRow(nextIdx)
-                self.sale_tbl_widget.setItem(nextIdx, 0, item0)
-                self.sale_tbl_widget.setItem(nextIdx, 1, item1)
-                self.sale_tbl_widget.setItem(nextIdx, 2, item2)
-                self.sale_tbl_widget.setItem(nextIdx, 3, item3)
-                self.sale_tbl_widget.setItem(nextIdx, 4, item4)
-        elif flag == 2:
-            for idx, (no, salePrice, addTax, supplyPrice, marginPrice) in enumerate(data):
-                item0, item1, item2, item3, item4 = self.create_item(no, salePrice, addTax, supplyPrice, marginPrice)
-                nextIdx = self.saleDetail_tbl_widget.rowCount()
-                self.saleDetail_tbl_widget.insertRow(nextIdx)
-                self.saleDetail_tbl_widget.setItem(nextIdx, 0, item0)
-                self.saleDetail_tbl_widget.setItem(nextIdx, 1, item1)
-                self.saleDetail_tbl_widget.setItem(nextIdx, 2, item2)
-                self.saleDetail_tbl_widget.setItem(nextIdx, 3, item3)
-                self.saleDetail_tbl_widget.setItem(nextIdx, 4, item4)
-
-    # tbl_widget에 들어갈 QTableWidgetItem 객체들을 생성해서 반환한다.
-    def create_item(self, *args):
-        items = []
-        for value in args:
-            item = QTableWidgetItem()
-            item.setTextAlignment(Qt.AlignCenter)
-            item.setData(Qt.DisplayRole, value)
-            items.append(item)
-        return items
-
     # line edit 으로부터 가져온 값들을 create_item()으로 타입을 변환해서 반환
     def get_item_from_le(self):
         if self.tab_widget.currentIndex() == 0:
             code = self.pro_le_code.text()
             name = self.pro_le_name.text()
-            return self.create_item(code, name)
+            return code, name
         elif self.tab_widget.currentIndex() == 1:
             no = self.sale_le_no.text()
             code = self.sale_le_code.text()
             price = self.sale_le_price.text()
             saleCnt = self.sale_le_saleCnt.text()
             marginRate = self.sale_le_marginRate.text()
-            return self.create_item(no, code, price, saleCnt, marginRate)
+            return no, code, price, saleCnt, marginRate
         elif self.tab_widget.currentIndex() == 2:
             no = self.saleDetail_le_no.text()
             salePrice = self.saleDetail_le_salePrice.text()
             addTax = self.saleDetail_le_addTax.text()
             supplyPrice = self.saleDetail_le_supplyPrice.text()
             marginPrice = self.saleDetail_le_marginPrice.text()
-            return self.create_item(no, salePrice, addTax, supplyPrice, marginPrice)
+            return no, salePrice, addTax, supplyPrice, marginPrice
 
     # line edit 초기화
     def init_item(self):
@@ -212,28 +220,14 @@ class DMLUi(QWidget):
     def add_item(self):
         if self.tab_widget.currentIndex() == 0:
             item0, item1 = self.get_item_from_le()
-            currentIdx = self.pro_tbl_widget.rowCount()
-            self.pro_tbl_widget.insertRow(currentIdx)
-            self.pro_tbl_widget.setItem(currentIdx, 0, item0)
-            self.pro_tbl_widget.setItem(currentIdx, 1, item1)
+            self.pDao.insert_item(item0, item1)
         elif self.tab_widget.currentIndex() == 1:
             item0, item1, item2, item3, item4 = self.get_item_from_le()
-            currentIdx = self.sale_tbl_widget.rowCount()
-            self.sale_tbl_widget.insertRow(currentIdx)
-            self.sale_tbl_widget.setItem(currentIdx, 0, item0)
-            self.sale_tbl_widget.setItem(currentIdx, 1, item1)
-            self.sale_tbl_widget.setItem(currentIdx, 2, item2)
-            self.sale_tbl_widget.setItem(currentIdx, 3, item3)
-            self.sale_tbl_widget.setItem(currentIdx, 4, item4)
+            self.sDao.insert_item(item0, item1, item2, item3, item4)
         elif self.tab_widget.currentIndex() == 2:
             item0, item1, item2, item3, item4 = self.get_item_from_le()
-            currentIdx = self.saleDetail_tbl_widget.rowCount()
-            self.saleDetail_tbl_widget.insertRow(currentIdx)
-            self.saleDetail_tbl_widget.setItem(currentIdx, 0, item0)
-            self.saleDetail_tbl_widget.setItem(currentIdx, 1, item1)
-            self.saleDetail_tbl_widget.setItem(currentIdx, 2, item2)
-            self.saleDetail_tbl_widget.setItem(currentIdx, 3, item3)
-            self.saleDetail_tbl_widget.setItem(currentIdx, 4, item4)
+            self.sdDao.insert_item(item0, item1, item2, item3, item4)
+        self.load_data_from_db()
         self.init_item()
 
     # 우클릭 '수정'으로 '추가'버튼이 '수정'버튼으로 변경/활성화 된 상태에서 수행되는 기능(line edit의 값을 tbl_widget에 반영)
