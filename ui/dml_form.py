@@ -9,6 +9,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QAbstractItemView, QHeaderView, QAction, QTableWidgetItem, QMessageBox
+from mysql.connector import Error
 from skimage.viewer.qt import Qt
 
 from dao.product_dao import ProductDao
@@ -32,6 +33,7 @@ class DMLUi(QWidget):
     sDao = SaleDao()
     sdDao = SaleDetailDao()
 
+    # done
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -58,19 +60,18 @@ class DMLUi(QWidget):
         self.set_context_menu(self.pro_tbl_widget)
         self.set_context_menu(self.sale_tbl_widget)
         self.set_context_menu(self.saleDetail_tbl_widget)
-        self.load_data_from_db()
 
     # 우클릭 메뉴 생성과 해당 기능별 slot과 connect()한다.
-    def set_context_menu(self, tv):
-        tv.setContextMenuPolicy(Qt.ActionsContextMenu)
-        update_action = QAction("수정", tv)
-        delete_action = QAction("삭제(미구현)", tv)
-        # todo tbl_widget 우클릭시 삭제 QAction 기능 추가하기
-        tv.addAction(update_action)
-        tv.addAction(delete_action)
+    def set_context_menu(self, tw):
+        tw.setContextMenuPolicy(Qt.ActionsContextMenu)
+        update_action = QAction("수정", tw)
+        delete_action = QAction("삭제", tw)
+        tw.addAction(update_action)
+        tw.addAction(delete_action)
         update_action.triggered.connect(self.__update)
-        delete_action.triggered.connect(self.__delete)
+        delete_action.triggered.connect(self.delete_item)
 
+    # done
     # tbl_widget에 들어갈 QTableWidgetItem 객체들을 생성해서 반환한다.
     def create_item(self, *args):
         items = []
@@ -81,8 +82,9 @@ class DMLUi(QWidget):
             items.append(item)
         return items
 
+    # done
     # enumerate(): 인덱스 번호와 컬렉션의 원소를 tuple형태로 반환한다.
-    def load_data(self, data, flag):
+    def load_data_from_db(self, data, flag):
         if flag == 0:
             [self.pro_tbl_widget.removeRow(0) for _ in range(self.pro_tbl_widget.rowCount())]
             for idx, (code, name) in enumerate(data):
@@ -115,11 +117,17 @@ class DMLUi(QWidget):
                 self.saleDetail_tbl_widget.setItem(nextIdx, 4, item4)
 
     # DB에서 테이블별 데이터 읽어오기
-    def load_data_from_db(self):
-        self.load_data(self.pDao.select_item(), 0)
-        self.load_data(self.sDao.select_item(), 1)
-        self.load_data(self.sdDao.select_item(), 2)
+    def load_data(self):
+        try:
+            self.load_data_from_db(self.pDao.select_item(), 0)
+            self.load_data_from_db(self.sDao.select_item(), 1)
+            self.load_data_from_db(self.sdDao.select_item(), 2)
+        except Error as e:
+            QMessageBox.information(self, "Load Error", e.msg, QMessageBox.Ok)
+            self.close()
+            self.closeSignal.emit()
 
+    # done
     # 우클릭 '수정'선택시 수행되는 기능
     def __update(self):
         # QMessageBox.information(self, 'Update', "확인", QMessageBox.Ok)
@@ -130,13 +138,14 @@ class DMLUi(QWidget):
                 selectedItems = self.pro_tbl_widget.selectedItems()
                 self.pro_le_code.setText(selectedItems[0].text())
                 self.pro_le_name.setText(selectedItems[1].text())
+                self.pro_le_code.setDisabled(True)
                 self.pro_btn_add.setText("수정")
                 self.pro_btn_add.clicked.disconnect()
                 self.pro_btn_add.clicked.connect(self.update_item)
                 self.pro_btn_del.setDisabled(True)
                 self.pro_tbl_widget.setSelectionMode(QAbstractItemView.NoSelection)
             except IndexError as e:
-                print(e)
+                QMessageBox.information(self, "Update Error", e.msg, QMessageBox.Ok)
         elif self.tab_widget.currentIndex() == 1:
             try:
                 if self.sale_tbl_widget.selectedIndexes().__len__() > self.sale_tbl_widget.columnCount():
@@ -147,13 +156,14 @@ class DMLUi(QWidget):
                 self.sale_le_price.setText(selectedItems[2].text())
                 self.sale_le_saleCnt.setText(selectedItems[3].text())
                 self.sale_le_marginRate.setText(selectedItems[4].text())
+                self.sale_le_no.setDisabled(True)
                 self.sale_btn_add.setText("수정")
                 self.sale_btn_add.clicked.disconnect()
                 self.sale_btn_add.clicked.connect(self.update_item)
                 self.sale_btn_del.setDisabled(True)
                 self.sale_tbl_widget.setSelectionMode(QAbstractItemView.NoSelection)
             except IndexError as e:
-                print(e)
+                QMessageBox.information(self, "Update Error", e.msg, QMessageBox.Ok)
         elif self.tab_widget.currentIndex() == 2:
             try:
                 if self.saleDetail_tbl_widget.selectedIndexes().__len__() > self.saleDetail_tbl_widget.columnCount():
@@ -164,20 +174,17 @@ class DMLUi(QWidget):
                 self.saleDetail_le_addTax.setText(selectedItems[2].text())
                 self.saleDetail_le_supplyPrice.setText(selectedItems[3].text())
                 self.saleDetail_le_marginPrice.setText(selectedItems[4].text())
+                self.saleDetail_le_no.setDisabled(True)
                 self.saleDetail_btn_add.setText("수정")
                 self.saleDetail_btn_add.clicked.disconnect()
                 self.saleDetail_btn_add.clicked.connect(self.update_item)
                 self.saleDetail_btn_del.setDisabled(True)
                 self.saleDetail_tbl_widget.setSelectionMode(QAbstractItemView.NoSelection)
             except IndexError as e:
-                print(e)
+                QMessageBox.information(self, "Update Error", e.msg, QMessageBox.Ok)
 
-    # todo 우클릭 삭제는 `191220 미구현...
-    def __delete(self):
-        pass
-        QMessageBox.information(self, 'Delete', "확인", QMessageBox.Ok)
-
-    # line edit 으로부터 가져온 값들을 create_item()으로 타입을 변환해서 반환
+    # done
+    # line edit 으로부터 가져온 값들을 반환
     def get_item_from_le(self):
         if self.tab_widget.currentIndex() == 0:
             code = self.pro_le_code.text()
@@ -198,6 +205,7 @@ class DMLUi(QWidget):
             marginPrice = self.saleDetail_le_marginPrice.text()
             return no, salePrice, addTax, supplyPrice, marginPrice
 
+    # done
     # line edit 초기화
     def init_item(self):
         if self.tab_widget.currentIndex() == 0:
@@ -216,92 +224,101 @@ class DMLUi(QWidget):
             self.saleDetail_le_supplyPrice.clear()
             self.saleDetail_le_marginPrice.clear()
 
-    # line edit 으로부터 가져온 값들을 tbl_widget의 현재행(curruntIdx)에 삽입
+    # done
+    # line edit 으로부터 가져온 값들을 DB에 insert() 수행 이후 select() 수행
     def add_item(self):
+        ret = None
         if self.tab_widget.currentIndex() == 0:
             item0, item1 = self.get_item_from_le()
-            self.pDao.insert_item(item0, item1)
+            ret = self.pDao.insert_item(item0, item1)
         elif self.tab_widget.currentIndex() == 1:
             item0, item1, item2, item3, item4 = self.get_item_from_le()
-            self.sDao.insert_item(item0, item1, item2, item3, item4)
+            ret = self.sDao.insert_item(item0, item1, item2, item3, item4)
         elif self.tab_widget.currentIndex() == 2:
             item0, item1, item2, item3, item4 = self.get_item_from_le()
-            self.sdDao.insert_item(item0, item1, item2, item3, item4)
-        self.load_data_from_db()
+            ret = self.sdDao.insert_item(item0, item1, item2, item3, item4)
+        if ret[0] is False:
+            QMessageBox.information(self, 'Error', ret[1], QMessageBox.Ok)
+        self.load_data()
         self.init_item()
 
+    # done
     # 우클릭 '수정'으로 '추가'버튼이 '수정'버튼으로 변경/활성화 된 상태에서 수행되는 기능(line edit의 값을 tbl_widget에 반영)
     def update_item(self):
+        ret = None
         if self.tab_widget.currentIndex() == 0:
-            selectedIndexes = self.pro_tbl_widget.selectedIndexes()
             item0, item1 = self.get_item_from_le()
-            self.pro_tbl_widget.setItem(selectedIndexes[0].row(), selectedIndexes[0].column(), item0)
-            self.pro_tbl_widget.setItem(selectedIndexes[1].row(), selectedIndexes[1].column(), item1)
+            ret = self.pDao.update_item(item1, item0)
+            self.pro_le_code.setEnabled(True)
             self.pro_btn_add.setText("추가")
             self.pro_btn_add.clicked.disconnect()
             self.pro_btn_add.clicked.connect(self.add_item)
             self.pro_btn_del.setEnabled(True)
-            # self.pro_tbl_widget.setSelectionMode(QAbstractItemView.SingleSelection)
             self.pro_tbl_widget.setSelectionMode(QAbstractItemView.ExtendedSelection)
         elif self.tab_widget.currentIndex() == 1:
-            selectedIndexes = self.sale_tbl_widget.selectedIndexes()
             item0, item1, item2, item3, item4 = self.get_item_from_le()
-            self.sale_tbl_widget.setItem(selectedIndexes[0].row(), selectedIndexes[0].column(), item0)
-            self.sale_tbl_widget.setItem(selectedIndexes[1].row(), selectedIndexes[1].column(), item1)
-            self.sale_tbl_widget.setItem(selectedIndexes[2].row(), selectedIndexes[2].column(), item2)
-            self.sale_tbl_widget.setItem(selectedIndexes[3].row(), selectedIndexes[3].column(), item3)
-            self.sale_tbl_widget.setItem(selectedIndexes[4].row(), selectedIndexes[4].column(), item4)
+            ret = self.sDao.update_item(item1, item2, item3, item4, item0)
+            self.sale_le_no.setEnabled(True)
             self.sale_btn_add.setText("추가")
             self.sale_btn_add.clicked.disconnect()
             self.sale_btn_add.clicked.connect(self.add_item)
             self.sale_btn_del.setEnabled(True)
-            # self.sale_tbl_widget.setSelectionMode(QAbstractItemView.SingleSelection)
             self.sale_tbl_widget.setSelectionMode(QAbstractItemView.ExtendedSelection)
         elif self.tab_widget.currentIndex() == 2:
-            selectedIndexes = self.saleDetail_tbl_widget.selectedIndexes()
             item0, item1, item2, item3, item4 = self.get_item_from_le()
-            self.saleDetail_tbl_widget.setItem(selectedIndexes[0].row(), selectedIndexes[0].column(), item0)
-            self.saleDetail_tbl_widget.setItem(selectedIndexes[1].row(), selectedIndexes[1].column(), item1)
-            self.saleDetail_tbl_widget.setItem(selectedIndexes[2].row(), selectedIndexes[2].column(), item2)
-            self.saleDetail_tbl_widget.setItem(selectedIndexes[3].row(), selectedIndexes[3].column(), item3)
-            self.saleDetail_tbl_widget.setItem(selectedIndexes[4].row(), selectedIndexes[4].column(), item4)
+            ret = self.sdDao.update_item(item1, item2, item3, item4, item0)
+            self.saleDetail_le_no.setEnabled(True)
             self.saleDetail_btn_add.setText("추가")
             self.saleDetail_btn_add.clicked.disconnect()
             self.saleDetail_btn_add.clicked.connect(self.add_item)
             self.saleDetail_btn_del.setEnabled(True)
-            # self.sale_tbl_widget.setSelectionMode(QAbstractItemView.SingleSelection)
             self.saleDetail_tbl_widget.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        if ret[0] is False:
+            QMessageBox.information(self, 'Error', ret[1], QMessageBox.Ok)
+        self.load_data()
         self.init_item()
 
+    # done
     # 클릭으로 선택된 row '삭제'버튼으로 삭제
+    # def delete_item(self):
+    #     ret = None
+    #     if self.tab_widget.currentIndex() == 0:
+    #         selectedItems = self.pro_tbl_widget.selectedItems()
+    #         [self.pDao.delete_item(item.text()) for item in selectedItems if item.column() is 0]
+    #     elif self.tab_widget.currentIndex() == 1:
+    #         selectedItems = self.sale_tbl_widget.selectedItems()
+    #         [self.sDao.delete_item(item.text()) for item in selectedItems if item.column() is 0]
+    #     elif self.tab_widget.currentIndex() == 2:
+    #         selectedItems = self.saleDetail_tbl_widget.selectedItems()
+    #         [self.sdDao.delete_item(item.text()) for item in selectedItems if item.column() is 0]
+    #     self.load_data()
+    #     self.init_item()
+
     def delete_item(self):
+        ret = None
+        trueCount = 0
+        falseCount = 0
         if self.tab_widget.currentIndex() == 0:
-            try:
-                indexList = self.pro_tbl_widget.selectedIndexes()
-                rowList = [index.row() for index in indexList if index.column() is 0]
-                rowList.sort()
-                for row in reversed(rowList):
-                    self.pro_tbl_widget.removeRow(row)
-            except IndexError as e:
-                print(e)
+            selectedItems = self.pro_tbl_widget.selectedItems()
+            ret = [self.pDao.delete_item(item.text()) for item in selectedItems if item.column() is 0]
         elif self.tab_widget.currentIndex() == 1:
-            try:
-                indexList = self.sale_tbl_widget.selectedIndexes()
-                rowList = [index.row() for index in indexList if index.column() is 0]
-                rowList.sort()
-                for row in reversed(rowList):
-                    self.sale_tbl_widget.removeRow(row)
-            except IndexError as e:
-                print(e)
+            selectedItems = self.sale_tbl_widget.selectedItems()
+            ret = [self.sDao.delete_item(item.text()) for item in selectedItems if item.column() is 0]
         elif self.tab_widget.currentIndex() == 2:
-            try:
-                indexList = self.saleDetail_tbl_widget.selectedIndexes()
-                rowList = [index.row() for index in indexList if index.column() is 0]
-                rowList.sort()
-                for row in reversed(rowList):
-                    self.saleDetail_tbl_widget.removeRow(row)
-            except IndexError as e:
-                print(e)
+            selectedItems = self.saleDetail_tbl_widget.selectedItems()
+            ret = [self.sdDao.delete_item(item.text()) for item in selectedItems if item.column() is 0]
+        for _tuple in ret:
+            if _tuple[0] is True:
+                trueCount += 1
+            else:
+                falseCount += 1
+
+        if falseCount > 0:
+            QMessageBox.information(self, 'Delete Error', ret[0][1], QMessageBox.Ok)
+        else:
+            QMessageBox.information(self, 'Delete Success', "{}건의 데이터가 삭제되었습니다".format(trueCount), QMessageBox.Ok)
+        self.load_data()
+        self.init_item()
 
     # 화면이 닫히면 closeSignal 발생
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
@@ -550,5 +567,5 @@ class DMLUi(QWidget):
         self.saleDetail_btn_add.setText(_translate("dml_widget", "추가"))
         self.saleDetail_btn_del.setText(_translate("dml_widget", "삭제"))
         self.saleDetail_btn_init.setText(_translate("dml_widget", "초기화"))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.saleDetail_tab_widget), _translate("dml_widget", "SaleDetail"))
-
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.saleDetail_tab_widget),
+                                   _translate("dml_widget", "SaleDetail"))

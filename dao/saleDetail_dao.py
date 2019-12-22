@@ -17,27 +17,27 @@ class SaleDetailDao(Dao):
         args = (no, salePrice, addTax, supplyPrice, marginPrice)
         try:
             super().do_query(query=insert_sql, kargs=args)
-            return True
-        except Error:
-            return False
+            return True,
+        except Error as e:
+            return False, e.msg
 
     def update_item(self, salePrice=None, addTax=None, supplyPrice=None, marginPrice=None, no=None):
         print("\n______{}()______".format(inspect.stack()[0][3]))
         args = (salePrice, addTax, supplyPrice, marginPrice, no)
         try:
             self.do_query(query=update_sql, kargs=args)
-            return True
-        except Error:
-            return False
+            return True,
+        except Error as e:
+            return False, e.msg
 
     def delete_item(self, no=None):
         print("\n______{}()______".format(inspect.stack()[0][3]))
         args = (no,)
         try:
             self.do_query(query=delete_sql, kargs=args)
-            return True
-        except Error:
-            return False
+            return True,
+        except Error as e:
+            return False, e.msg
 
     def select_item(self, no=None):
         print("\n______{}()______".format(inspect.stack()[0][3]))
@@ -49,7 +49,7 @@ class SaleDetailDao(Dao):
             [res.append(row) for row in self.iter_row(cursor, 5)]
             return res
         except Error as e:
-            print(e)
+            raise e
         finally:
             cursor.close()
             conn.close()

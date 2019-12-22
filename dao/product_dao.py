@@ -17,18 +17,18 @@ class ProductDao(Dao):
         args = (code, name)
         try:
             super().do_query(query=insert_sql, kargs=args)
-            return True
-        except Error:
-            return False
+            return True,
+        except Error as e:
+            return False, e.msg
 
     def update_item(self, name=None, code=None):
         print("\n______{}()______".format(inspect.stack()[0][3]))
-        args = (name, )
+        args = (name, code)
         try:
             self.do_query(query=update_sql, kargs=args)
-            return True
-        except Error:
-            return False
+            return True,
+        except Error as e:
+            return False, e.msg
 
     # 완료
     def delete_item(self, no=None):
@@ -36,21 +36,21 @@ class ProductDao(Dao):
         args = (no,)
         try:
             self.do_query(query=delete_sql, kargs=args)
-            return True
-        except Error:
-            return False
+            return True,
+        except Error as e:
+            return False, e.msg
 
-    def select_item(self, no=None):
+    def select_item(self, code=None):
         print("\n______{}()______".format(inspect.stack()[0][3]))
         try:
             conn = self.connection_pool.get_connection()
             cursor = conn.cursor()
-            cursor.execute(select_sql) if no is None else cursor.execute(select_sql_where, (no,))
+            cursor.execute(select_sql) if code is None else cursor.execute(select_sql_where, (code,))
             res = []
             [res.append(row) for row in self.iter_row(cursor, 5)]
             return res
         except Error as e:
-            print(e)
+            raise e
         finally:
             cursor.close()
             conn.close()

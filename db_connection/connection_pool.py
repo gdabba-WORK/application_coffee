@@ -23,3 +23,4 @@ class ConnectionPool(object):
     @classmethod
     def pool_close(cls):
         cls.INSTANCE = None
+

@@ -15,13 +15,13 @@ from db_connection.coffee_init_service import DbInit
 
 class DDLUi(QWidget):
     closeSignal = pyqtSignal()
+    db = DbInit()
 
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.retranslateUi(self)
 
-        self.db = DbInit()
         self.btn_create.clicked.connect(self.db.service)
         self.btn_create.clicked.connect(lambda stat, text=self.btn_create.text():
                                         self.showButtonText(stat, text))

@@ -35,6 +35,7 @@ class MainUi(QMainWindow):
 
     def switchDML(self):
         self.hide()
+        self.dml.load_data()
         self.dml.show()
 
     def setupUi(self, MainWindow):
