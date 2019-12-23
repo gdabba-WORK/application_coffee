@@ -32,8 +32,14 @@ class DDLUi(QWidget):
         self.btn_restore.clicked.connect(lambda stat, text=self.btn_restore.text():
                                          self.showButtonText(stat, text))
 
+        self.btn_goback.clicked.connect(self.close)
+
     def showButtonText(self, stat, text):
         QMessageBox.information(self, 'System Message', text+' Success', QMessageBox.Ok)
+
+    def close(self) -> bool:
+        self.closeSignal.emit()
+        return super().close()
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         self.closeSignal.emit()
@@ -41,24 +47,44 @@ class DDLUi(QWidget):
 
     def setupUi(self, widget):
         widget.setObjectName("widget")
-        widget.resize(532, 295)
+        widget.resize(532, 189)
+        self.gridLayout = QtWidgets.QGridLayout(widget)
+        self.gridLayout.setObjectName("gridLayout")
         self.splitter = QtWidgets.QSplitter(widget)
-        self.splitter.setGeometry(QtCore.QRect(50, 30, 401, 101))
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
         self.btn_create = QtWidgets.QPushButton(self.splitter)
+        font = QtGui.QFont()
+        font.setPointSize(18)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btn_create.setFont(font)
         self.btn_create.setObjectName("btn_create")
         self.btn_backup = QtWidgets.QPushButton(self.splitter)
+        font = QtGui.QFont()
+        font.setPointSize(18)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btn_backup.setFont(font)
         self.btn_backup.setObjectName("btn_backup")
         self.btn_restore = QtWidgets.QPushButton(self.splitter)
+        font = QtGui.QFont()
+        font.setPointSize(18)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btn_restore.setFont(font)
         self.btn_restore.setObjectName("btn_restore")
-        self.btn_close = QtWidgets.QPushButton(widget)
-        self.btn_close.setGeometry(QtCore.QRect(200, 190, 80, 23))
-        self.btn_close.setObjectName("btn_close")
+        self.gridLayout.addWidget(self.splitter, 0, 0, 1, 1)
+        self.btn_goback = QtWidgets.QPushButton(widget)
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.btn_goback.setFont(font)
+        self.btn_goback.setObjectName("btn_goback")
+        self.gridLayout.addWidget(self.btn_goback, 1, 0, 1, 1)
 
         self.retranslateUi(widget)
         QtCore.QMetaObject.connectSlotsByName(widget)
-
 
     def retranslateUi(self, widget):
         _translate = QtCore.QCoreApplication.translate
@@ -66,4 +92,4 @@ class DDLUi(QWidget):
         self.btn_create.setText(_translate("widget", "Create"))
         self.btn_backup.setText(_translate("widget", "Backup"))
         self.btn_restore.setText(_translate("widget", "Restore"))
-        self.btn_close.setText(_translate("widget", "close"))
+        self.btn_goback.setText(_translate("widget", "뒤로가기"))

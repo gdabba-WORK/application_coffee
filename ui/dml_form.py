@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'dml_form.ui'
-#
-# Created by: PyQt5 UI code generator 5.9.2
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QAbstractItemView, QHeaderView, QAction, QTableWidgetItem, QMessageBox
@@ -17,6 +9,7 @@ from dao.saleDetail_dao import SaleDetailDao
 from dao.sale_dao import SaleDao
 
 
+# 탭별 테이블 위젯 속성 지정
 def set_table(table=None, data=None):
     table.setHorizontalHeaderLabels(data)
     # row단위 선택
@@ -33,11 +26,11 @@ class DMLUi(QWidget):
     sDao = SaleDao()
     sdDao = SaleDetailDao()
 
-    # done
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.retranslateUi(self)
+
 
         set_table(self.pro_tbl_widget, ["code", "name"])
         set_table(self.sale_tbl_widget, ["no", "code", "price", "saleCnt", "marginRate"])
@@ -61,7 +54,7 @@ class DMLUi(QWidget):
         self.set_context_menu(self.sale_tbl_widget)
         self.set_context_menu(self.saleDetail_tbl_widget)
 
-    # 우클릭 메뉴 생성과 해당 기능별 slot과 connect()한다.
+    # 우클릭 메뉴 추가
     def set_context_menu(self, tw):
         tw.setContextMenuPolicy(Qt.ActionsContextMenu)
         update_action = QAction("수정", tw)
@@ -71,8 +64,7 @@ class DMLUi(QWidget):
         update_action.triggered.connect(self.__update)
         delete_action.triggered.connect(self.delete_item)
 
-    # done
-    # tbl_widget에 들어갈 QTableWidgetItem 객체들을 생성해서 반환한다.
+    # 테이블 위젯에 들어갈 QTableWidgetItem 객체들을 생성해서 반환한다.
     def create_item(self, *args):
         items = []
         for value in args:
@@ -82,8 +74,7 @@ class DMLUi(QWidget):
             items.append(item)
         return items
 
-    # done
-    # enumerate(): 인덱스 번호와 컬렉션의 원소를 tuple형태로 반환한다.
+    # 테이블 위젯에 들어갈 DB 데이터를 파라미터로 받아 삽입한다.
     def load_data_from_db(self, data, flag):
         if flag == 0:
             [self.pro_tbl_widget.removeRow(0) for _ in range(self.pro_tbl_widget.rowCount())]
@@ -116,7 +107,7 @@ class DMLUi(QWidget):
                 self.saleDetail_tbl_widget.setItem(nextIdx, 3, item3)
                 self.saleDetail_tbl_widget.setItem(nextIdx, 4, item4)
 
-    # DB에서 테이블별 데이터 읽어오기
+    # DB에서 읽어온 데이터를 각각의 테이블 위젯으로 불러온다.
     def load_data(self):
         try:
             self.load_data_from_db(self.pDao.select_item(), 0)
@@ -127,10 +118,8 @@ class DMLUi(QWidget):
             self.close()
             self.closeSignal.emit()
 
-    # done
-    # 우클릭 '수정'선택시 수행되는 기능
+    # 테이블 위젯에서 우클릭 '수정' 선택시 수행되는 기능
     def __update(self):
-        # QMessageBox.information(self, 'Update', "확인", QMessageBox.Ok)
         if self.tab_widget.currentIndex() == 0:
             try:
                 if self.pro_tbl_widget.selectedIndexes().__len__() > self.pro_tbl_widget.columnCount():
@@ -183,7 +172,6 @@ class DMLUi(QWidget):
             except IndexError as e:
                 QMessageBox.information(self, "Update Error", e.msg, QMessageBox.Ok)
 
-    # done
     # line edit 으로부터 가져온 값들을 반환
     def get_item_from_le(self):
         if self.tab_widget.currentIndex() == 0:
@@ -205,7 +193,6 @@ class DMLUi(QWidget):
             marginPrice = self.saleDetail_le_marginPrice.text()
             return no, salePrice, addTax, supplyPrice, marginPrice
 
-    # done
     # line edit 초기화
     def init_item(self):
         if self.tab_widget.currentIndex() == 0:
@@ -224,7 +211,6 @@ class DMLUi(QWidget):
             self.saleDetail_le_supplyPrice.clear()
             self.saleDetail_le_marginPrice.clear()
 
-    # done
     # line edit 으로부터 가져온 값들을 DB에 insert() 수행 이후 select() 수행
     def add_item(self):
         ret = None
@@ -242,8 +228,7 @@ class DMLUi(QWidget):
         self.load_data()
         self.init_item()
 
-    # done
-    # 우클릭 '수정'으로 '추가'버튼이 '수정'버튼으로 변경/활성화 된 상태에서 수행되는 기능(line edit의 값을 tbl_widget에 반영)
+    # 우클릭 '수정'으로 '추가'버튼이 '수정'버튼으로 변경/활성화 된 상태에서 수행되는 기능(line edit의 값을 테이블 위젯에 반영)
     def update_item(self):
         ret = None
         if self.tab_widget.currentIndex() == 0:
@@ -278,22 +263,7 @@ class DMLUi(QWidget):
         self.load_data()
         self.init_item()
 
-    # done
-    # 클릭으로 선택된 row '삭제'버튼으로 삭제
-    # def delete_item(self):
-    #     ret = None
-    #     if self.tab_widget.currentIndex() == 0:
-    #         selectedItems = self.pro_tbl_widget.selectedItems()
-    #         [self.pDao.delete_item(item.text()) for item in selectedItems if item.column() is 0]
-    #     elif self.tab_widget.currentIndex() == 1:
-    #         selectedItems = self.sale_tbl_widget.selectedItems()
-    #         [self.sDao.delete_item(item.text()) for item in selectedItems if item.column() is 0]
-    #     elif self.tab_widget.currentIndex() == 2:
-    #         selectedItems = self.saleDetail_tbl_widget.selectedItems()
-    #         [self.sdDao.delete_item(item.text()) for item in selectedItems if item.column() is 0]
-    #     self.load_data()
-    #     self.init_item()
-
+    # 테이블 위젯에서 하나 이상의 선택된 튜플을 삭제한다.
     def delete_item(self):
         ret = None
         trueCount = 0
@@ -325,7 +295,7 @@ class DMLUi(QWidget):
         self.closeSignal.emit()
         super().closeEvent(a0)
 
-    # PyUIC5 툴로 자동 생성된 메소드
+    # PyUIC5 툴로 자동 생성된 메소드 1/2(uic 모듈의 loadUi()와 같다)
     def setupUi(self, dml_widget):
         dml_widget.setObjectName("dml_widget")
         dml_widget.resize(947, 614)
@@ -540,7 +510,7 @@ class DMLUi(QWidget):
         self.tab_widget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(dml_widget)
 
-    # PyUIC5 툴로 자동 생성된 메소드
+    # PyUIC5 툴로 자동 생성된 메소드 2/2(uic 모듈의 loadUi()와 같다)
     def retranslateUi(self, dml_widget):
         _translate = QtCore.QCoreApplication.translate
         dml_widget.setWindowTitle(_translate("dml_widget", "Form"))
