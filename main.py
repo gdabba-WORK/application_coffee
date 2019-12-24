@@ -6,4 +6,3 @@ if __name__ == "__main__":
     app = QApplication([])
     w = MainUi()
     app.exec_()
-

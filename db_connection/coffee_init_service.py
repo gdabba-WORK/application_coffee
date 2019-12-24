@@ -12,7 +12,6 @@ class DbInit:
 
     def __create_database(self):
         try:
-            sql = read_ddl_file()
             conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
             cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(self._db['database_name']))
@@ -33,7 +32,7 @@ class DbInit:
         try:
             conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
-            # cursor.execute("USE {}".format(self._db['database_name']))
+            cursor.execute("USE {}".format(self._db['database_name']))
             for table_name, table_sql in self._db['sql'].items():
                 try:
                     print("Creating table {}".format(table_name), end=' ')
@@ -68,7 +67,7 @@ class DbInit:
         try:
             conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
-            # cursor.execute("USE {}".format(self._db['database_name']))
+            cursor.execute("USE {}".format(self._db['database_name']))
             for trigger_name, trigger_sql in self._db['trigger'].items():
                 try:
                     print("Creating trigger {}".format(trigger_name), end=' ')
@@ -90,7 +89,7 @@ class DbInit:
         try:
             conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
-            # cursor.execute("USE {}".format(self._db['database_name']))
+            cursor.execute("USE {}".format(self._db['database_name']))
             for procedure_name, procedure_sql in self._db['procedure'].items():
                 try:
                     print("Creating procedure {}".format(procedure_name), end=' ')
@@ -109,7 +108,7 @@ class DbInit:
         try:
             conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
-            # cursor.execute("USE {}".format(self._db['database_name']))
+            cursor.execute("USE {}".format(self._db['database_name']))
             for backup_name, backup_sql in self._db['backup'].items():
                 try:
                     print("Do backup for {} table".format(backup_name), end=' ')
@@ -131,7 +130,7 @@ class DbInit:
         try:
             conn = ConnectionPool.get_instance().get_connection()
             cursor = conn.cursor()
-            # cursor.execute("USE {}".format(self._db['database_name']))
+            cursor.execute("USE {}".format(self._db['database_name']))
             for restore_name, restore_sql in self._db['restore'].items():
                 try:
                     print("Do restore for {} table".format(restore_name), end=' ')

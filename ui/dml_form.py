@@ -9,32 +9,20 @@ from dao.saleDetail_dao import SaleDetailDao
 from dao.sale_dao import SaleDao
 
 
-# 탭별 테이블 위젯 속성 지정
-def set_table(table=None, data=None):
-    table.setHorizontalHeaderLabels(data)
-    # row단위 선택
-    table.setSelectionBehavior(QAbstractItemView.SelectRows)
-    # 테이블 직접 값 입력 불가 설정
-    table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-    # 균일한 간격으로 열 재배치(Qt Designer에 해당 옵션이 존재하지 않아 코드로 직접 설정)
-    table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-
-
-class DMLUi(QWidget):
+class ManipulationUi(QWidget):
     closeSignal = pyqtSignal()
-    pDao = ProductDao()
-    sDao = SaleDao()
-    sdDao = SaleDetailDao()
 
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
-        self.retranslateUi(self)
+        self.__setupUi(self)
 
+        self.pDao = ProductDao()
+        self.sDao = SaleDao()
+        self.sdDao = SaleDetailDao()
 
-        set_table(self.pro_tbl_widget, ["code", "name"])
-        set_table(self.sale_tbl_widget, ["no", "code", "price", "saleCnt", "marginRate"])
-        set_table(self.saleDetail_tbl_widget, ["no", "salePrice", "addTax", "supplyPrice", "marginPrice"])
+        self.set_table(self.pro_tbl_widget, ["code", "name"])
+        self.set_table(self.sale_tbl_widget, ["no", "code", "price", "saleCnt", "marginRate"])
+        self.set_table(self.saleDetail_tbl_widget, ["no", "salePrice", "addTax", "supplyPrice", "marginPrice"])
 
         self.tab_widget.setCurrentIndex(0)
 
@@ -53,6 +41,16 @@ class DMLUi(QWidget):
         self.set_context_menu(self.pro_tbl_widget)
         self.set_context_menu(self.sale_tbl_widget)
         self.set_context_menu(self.saleDetail_tbl_widget)
+
+    # 탭별 테이블 위젯 속성 지정
+    def set_table(self, table=None, data=None):
+        table.setHorizontalHeaderLabels(data)
+        # row단위 선택
+        table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        # 테이블 직접 값 입력 불가 설정
+        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        # 균일한 간격으로 열 재배치(Qt Designer에 해당 옵션이 존재하지 않아 코드로 직접 설정)
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
     # 우클릭 메뉴 추가
     def set_context_menu(self, tw):
@@ -179,18 +177,18 @@ class DMLUi(QWidget):
             name = self.pro_le_name.text()
             return code, name
         elif self.tab_widget.currentIndex() == 1:
-            no = self.sale_le_no.text()
+            no = None if self.sale_le_no.text() is '' else self.sale_le_no.text()
             code = self.sale_le_code.text()
-            price = self.sale_le_price.text()
-            saleCnt = self.sale_le_saleCnt.text()
-            marginRate = self.sale_le_marginRate.text()
+            price = None if self.sale_le_price.text() is '' else self.sale_le_price.text()
+            saleCnt = None if self.sale_le_saleCnt.text() is '' else self.sale_le_saleCnt.text()
+            marginRate = None if self.sale_le_marginRate.text() is '' else self.sale_le_marginRate.text()
             return no, code, price, saleCnt, marginRate
         elif self.tab_widget.currentIndex() == 2:
-            no = self.saleDetail_le_no.text()
-            salePrice = self.saleDetail_le_salePrice.text()
-            addTax = self.saleDetail_le_addTax.text()
-            supplyPrice = self.saleDetail_le_supplyPrice.text()
-            marginPrice = self.saleDetail_le_marginPrice.text()
+            no = None if self.saleDetail_le_no.text() is '' else self.saleDetail_le_no.text()
+            salePrice = None if self.saleDetail_le_salePrice.text() is '' else self.saleDetail_le_salePrice.text()
+            addTax = None if self.saleDetail_le_addTax.text() is '' else self.saleDetail_le_addTax.text()
+            supplyPrice = None if self.saleDetail_le_supplyPrice.text() is '' else self.saleDetail_le_supplyPrice.text()
+            marginPrice = None if self.saleDetail_le_marginPrice.text() is '' else self.saleDetail_le_marginPrice.text()
             return no, salePrice, addTax, supplyPrice, marginPrice
 
     # line edit 초기화
@@ -295,8 +293,8 @@ class DMLUi(QWidget):
         self.closeSignal.emit()
         super().closeEvent(a0)
 
-    # PyUIC5 툴로 자동 생성된 메소드 1/2(uic 모듈의 loadUi()와 같다)
-    def setupUi(self, dml_widget):
+    # PyUIC5 툴로 자동 생성된 메소드 1/2 (uic 모듈의 loadUi()와 같다)
+    def __setupUi(self, dml_widget):
         dml_widget.setObjectName("dml_widget")
         dml_widget.resize(947, 614)
         self.gridLayout = QtWidgets.QGridLayout(dml_widget)
@@ -506,12 +504,12 @@ class DMLUi(QWidget):
         self.tab_widget.addTab(self.saleDetail_tab_widget, "")
         self.gridLayout.addWidget(self.tab_widget, 0, 0, 1, 1)
 
-        self.retranslateUi(dml_widget)
+        self.__retranslateUi(dml_widget)
         self.tab_widget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(dml_widget)
 
-    # PyUIC5 툴로 자동 생성된 메소드 2/2(uic 모듈의 loadUi()와 같다)
-    def retranslateUi(self, dml_widget):
+    # PyUIC5 툴로 자동 생성된 메소드 2/2
+    def __retranslateUi(self, dml_widget):
         _translate = QtCore.QCoreApplication.translate
         dml_widget.setWindowTitle(_translate("dml_widget", "Form"))
         self.pro_btn_add.setText(_translate("dml_widget", "추가"))

@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'ddl_form.ui'
-#
-# Created by: PyQt5 UI code generator 5.9.2
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QMessageBox
@@ -13,14 +5,13 @@ from PyQt5.QtWidgets import QWidget, QMessageBox
 from db_connection.coffee_init_service import DbInit
 
 
-class DDLUi(QWidget):
+class SettingUi(QWidget):
     closeSignal = pyqtSignal()
-    db = DbInit()
 
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
-        self.retranslateUi(self)
+        self.__setupUi(self)
+        self.db = DbInit()
 
         self.btn_create.clicked.connect(self.db.service)
         self.btn_create.clicked.connect(lambda stat, text=self.btn_create.text():
@@ -45,7 +36,8 @@ class DDLUi(QWidget):
         self.closeSignal.emit()
         super().closeEvent(a0)
 
-    def setupUi(self, widget):
+    # PyUIC5 툴로 자동 생성된 메소드 1/2(uic 모듈의 loadUi()와 같다)
+    def __setupUi(self, widget):
         widget.setObjectName("widget")
         widget.resize(532, 189)
         self.gridLayout = QtWidgets.QGridLayout(widget)
@@ -83,10 +75,11 @@ class DDLUi(QWidget):
         self.btn_goback.setObjectName("btn_goback")
         self.gridLayout.addWidget(self.btn_goback, 1, 0, 1, 1)
 
-        self.retranslateUi(widget)
+        self.__retranslateUi(widget)
         QtCore.QMetaObject.connectSlotsByName(widget)
 
-    def retranslateUi(self, widget):
+    # PyUIC5 툴로 자동 생성된 메소드 2/2
+    def __retranslateUi(self, widget):
         _translate = QtCore.QCoreApplication.translate
         widget.setWindowTitle(_translate("widget", "DDL Application"))
         self.btn_create.setText(_translate("widget", "Create"))

@@ -1,46 +1,39 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'coffee_main.ui'
-#
-# Created by: PyQt5 UI code generator 5.9.2
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QMainWindow
 
-from ui.ddl_form import DDLUi
-from ui.dml_form import DMLUi
+from ui.ddl_form import SettingUi
+from ui.dml_form import ManipulationUi
 
 
 class MainUi(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
-        self.retranslateUi(self)
+        self.__setupUi(self)
         self.show()
 
-        self.ddl = DDLUi()
-        self.btn_ddl.clicked.connect(self.switchDDL)
-        self.ddl.closeSignal.connect(self.show)
+        self.s_ui = SettingUi()
+        self.btn_ddl.clicked.connect(self.switchSui)
+        self.s_ui.closeSignal.connect(self.show)
 
-        self.dml = DMLUi()
-        self.btn_dml.clicked.connect(self.switchDML)
-        self.dml.closeSignal.connect(self.show)
+        self.m_ui = ManipulationUi()
+        self.btn_dml.clicked.connect(self.switchMui)
+        self.m_ui.closeSignal.connect(self.show)
 
         self.btn_exit.clicked.connect(self.close)
 
-    def switchDDL(self):
+    # Setting Ui로 전환
+    def switchSui(self):
         self.hide()
-        self.ddl.show()
+        self.s_ui.show()
 
-    def switchDML(self):
+    # Manipulation Ui로 전환
+    def switchMui(self):
         self.hide()
-        self.dml.load_data()
-        self.dml.show()
+        self.m_ui.load_data()
+        self.m_ui.show()
 
-    def setupUi(self, MainWindow):
+    # PyUIC5 툴로 자동 생성된 메소드 1/2 (uic 모듈의 loadUi()와 같다)
+    def __setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(520, 374)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -89,10 +82,11 @@ class MainUi(QMainWindow):
         MainWindow.setStatusBar(self.statusbar)
         self.menubar.addAction(self.menuMenu.menuAction())
 
-        self.retranslateUi(MainWindow)
+        self.__retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow):
+    # PyUIC5 툴로 자동 생성된 메소드 2/2
+    def __retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Coffee Application"))
         self.btn_exit.setText(_translate("MainWindow", "종료"))
