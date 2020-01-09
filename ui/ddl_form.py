@@ -82,7 +82,7 @@ class SettingUi(QWidget):
     def __retranslateUi(self, widget):
         _translate = QtCore.QCoreApplication.translate
         widget.setWindowTitle(_translate("widget", "DDL Application"))
-        self.btn_create.setText(_translate("widget", "Create"))
-        self.btn_backup.setText(_translate("widget", "Backup"))
-        self.btn_restore.setText(_translate("widget", "Restore"))
+        self.btn_create.setText(_translate("widget", "초기화"))
+        self.btn_backup.setText(_translate("widget", "백업"))
+        self.btn_restore.setText(_translate("widget", "복원"))
         self.btn_goback.setText(_translate("widget", "뒤로가기"))

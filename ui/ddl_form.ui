@@ -28,7 +28,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Create</string>
+       <string>초기화</string>
       </property>
      </widget>
      <widget class="QPushButton" name="btn_backup">
@@ -40,7 +40,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Backup</string>
+       <string>백업</string>
       </property>
      </widget>
      <widget class="QPushButton" name="btn_restore">
@@ -52,7 +52,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Restore</string>
+       <string>복원</string>
       </property>
      </widget>
     </widget>
