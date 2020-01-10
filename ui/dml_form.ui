@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tab_widget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pro_tab_widget">
       <attribute name="title">
@@ -212,6 +212,20 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="sale_btn_print1">
+           <property name="text">
+            <string>출력1</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="sale_btn_print2">
+           <property name="text">
+            <string>출력2</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="sale_btn_add">

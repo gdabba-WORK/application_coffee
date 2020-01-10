@@ -7,6 +7,7 @@ from skimage.viewer.qt import Qt
 from dao.product_dao import ProductDao
 from dao.saleDetail_dao import SaleDetailDao
 from dao.sale_dao import SaleDao
+from ui.rank_form import RankUi
 
 
 class ManipulationUi(QWidget):
@@ -19,6 +20,7 @@ class ManipulationUi(QWidget):
         self.pDao = ProductDao()
         self.sDao = SaleDao()
         self.sdDao = SaleDetailDao()
+        self.rankUi = None
 
         self.set_table(self.pro_tbl_widget, ["code", "name"])
         self.set_table(self.sale_tbl_widget, ["no", "code", "price", "saleCnt", "marginRate"])
@@ -36,11 +38,19 @@ class ManipulationUi(QWidget):
         self.saleDetail_btn_add.clicked.connect(self.add_item)
         self.saleDetail_btn_del.clicked.connect(self.delete_item)
         self.saleDetail_btn_init.clicked.connect(self.init_item)
+        self.sale_btn_print1.clicked.connect(self.load_rankUi1)
+        self.sale_btn_print2.clicked.connect(self.load_rankUi2)
 
         # 마우스 우클릭시 메뉴
         self.set_context_menu(self.pro_tbl_widget)
         self.set_context_menu(self.sale_tbl_widget)
         self.set_context_menu(self.saleDetail_tbl_widget)
+
+    def load_rankUi1(self):
+        self.rankUi = RankUi(1)
+
+    def load_rankUi2(self):
+        self.rankUi = RankUi(2)
 
     # 탭별 테이블 위젯 속성 지정
     def set_table(self, table=None, data=None):
@@ -409,6 +419,12 @@ class ManipulationUi(QWidget):
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem1)
+        self.sale_btn_print1 = QtWidgets.QPushButton(self.sale_tab_widget)
+        self.sale_btn_print1.setObjectName("sale_btn_print1")
+        self.horizontalLayout_2.addWidget(self.sale_btn_print1)
+        self.sale_btn_print2 = QtWidgets.QPushButton(self.sale_tab_widget)
+        self.sale_btn_print2.setObjectName("sale_btn_print2")
+        self.horizontalLayout_2.addWidget(self.sale_btn_print2)
         self.sale_btn_add = QtWidgets.QPushButton(self.sale_tab_widget)
         self.sale_btn_add.setObjectName("sale_btn_add")
         self.horizontalLayout_2.addWidget(self.sale_btn_add)
@@ -505,7 +521,7 @@ class ManipulationUi(QWidget):
         self.gridLayout.addWidget(self.tab_widget, 0, 0, 1, 1)
 
         self.__retranslateUi(dml_widget)
-        self.tab_widget.setCurrentIndex(0)
+        self.tab_widget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(dml_widget)
 
     # PyUIC5 툴로 자동 생성된 메소드 2/2
@@ -523,6 +539,8 @@ class ManipulationUi(QWidget):
         self.sale_lbl_price.setText(_translate("dml_widget", "price"))
         self.sale_lbl_saleCnt.setText(_translate("dml_widget", "saleCnt"))
         self.sale_lbl_marginRate.setText(_translate("dml_widget", "marginRate"))
+        self.sale_btn_print1.setText(_translate("dml_widget", "출력1"))
+        self.sale_btn_print2.setText(_translate("dml_widget", "출력2"))
         self.sale_btn_add.setText(_translate("dml_widget", "추가"))
         self.sale_btn_del.setText(_translate("dml_widget", "삭제"))
         self.sale_btn_init.setText(_translate("dml_widget", "초기화"))
@@ -537,3 +555,6 @@ class ManipulationUi(QWidget):
         self.saleDetail_btn_init.setText(_translate("dml_widget", "초기화"))
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.saleDetail_tab_widget),
                                    _translate("dml_widget", "SaleDetail"))
+
+
+
